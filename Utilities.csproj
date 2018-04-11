@@ -42,7 +42,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Events\EventData.cs" />
+    <Compile Include="IOFunctions\LoadFiles.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Unicode\Utf8.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
