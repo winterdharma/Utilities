@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Utilities.Unicode
+namespace Utilities.Chinese
 {
     public static class Utf8
     {
