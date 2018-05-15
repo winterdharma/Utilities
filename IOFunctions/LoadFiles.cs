@@ -67,7 +67,7 @@ namespace Utilities.IOFunctions
         public static List<string> TextFile(string filePath, Encoding encoding)
         {
             
-            if (Directory.Exists(filePath))
+            if (File.Exists(filePath))
             {
                 var textFile = new List<string>();
 

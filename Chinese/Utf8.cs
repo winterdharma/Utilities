@@ -61,7 +61,7 @@ namespace Utilities.Chinese
         }
 
 
-        private static IEnumerable<string> AsCodePoints(string str)
+        public static IEnumerable<string> AsCodePoints(string str)
         {
             for (int i = 0; i < str.Length; ++i)
             {

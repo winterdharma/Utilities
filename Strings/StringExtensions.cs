@@ -1,0 +1,46 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+
+namespace Utilities.Strings
+{
+    public static class StringExtensions
+    {
+        /// <summary>
+        /// Searches for substrings with specified start and ending chars,
+        /// removes them, and returns the resulting string.
+        /// </summary>
+        /// <param name="s">The original string.</param>
+        /// <param name="startsWith">The first character of the search string.</param>
+        /// <param name="endsWith">The last character of the search string.</param>
+        /// <param name="maxLength">If greater than 0, limits the search to strings this length or 
+        ///     shorter. If 0, there is no limit.</param>
+        public static string Scrub(this string s, char startsWith, char endsWith, int maxLength = 0)
+        {
+            string start = startsWith.ToString();
+            string ending = endsWith.ToString();
+
+            if (startsWith.Equals('[') || startsWith.Equals(']'))
+                start = @"\" + start;
+
+            if (endsWith.Equals('[') || endsWith.Equals(']'))
+                ending = @"\" + ending;
+
+            string searchPattern;
+            if(maxLength == 0)
+                searchPattern = "^" + start + "$" + ending;
+            else
+            {
+                int innerChars = maxLength - 2;
+                searchPattern = start + @"\w{0," + innerChars + @"}" + ending;
+            }
+
+            s = Regex.Replace(s, searchPattern, String.Empty);
+            
+            return s;
+        }
+    }
+}
