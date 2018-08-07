@@ -11,7 +11,8 @@ namespace Utilities.Strings
     {
         /// <summary>
         /// Searches for substrings with specified start and ending chars,
-        /// removes them, and returns the resulting string.
+        /// removes them, and returns the resulting string. MaxLength is the max
+        /// length of substrings to remove, including the start and end characters.
         /// </summary>
         /// <param name="s">The original string.</param>
         /// <param name="startsWith">The first character of the search string.</param>
@@ -41,6 +42,11 @@ namespace Utilities.Strings
             s = Regex.Replace(s, searchPattern, String.Empty);
             
             return s;
+        }
+
+        public static string Truncate(this string s, int length)
+        {
+            return s.Substring(0, s.Length - length);
         }
     }
 }

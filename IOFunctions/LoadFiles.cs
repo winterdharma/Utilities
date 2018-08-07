@@ -64,9 +64,11 @@ namespace Utilities.IOFunctions
         /// <param name="filePath"></param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        public static List<string> TextFile(string filePath, Encoding encoding)
+        public static List<string> TextFile(string filePath, Encoding encoding = null)
         {
-            
+            if (encoding == null)
+                encoding = Encoding.UTF8;
+
             if (File.Exists(filePath))
             {
                 var textFile = new List<string>();
@@ -84,8 +86,18 @@ namespace Utilities.IOFunctions
             }
             else
             {
-                throw new ArgumentException("File path is not valid.");
+                throw new ArgumentException(filePath + " is not valid.");
             }
+        }
+
+        public static List<List<string>> TextFiles(List<string> filePaths, Encoding encoding = null)
+        {
+            var files = new List<List<string>>();
+            foreach(string file in filePaths)
+            {
+                files.Add(TextFile(file, encoding));
+            }
+            return files;
         }
     }
 }
