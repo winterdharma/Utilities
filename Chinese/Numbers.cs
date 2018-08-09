@@ -98,6 +98,11 @@ namespace Utilities.Chinese
             return GetEnglishNumberString(value);
         }
 
+        public static int ToValue(string chinese)
+        {
+            return ConvertChineseToInteger(chinese);
+        }
+
         private static string TranslateChineseOrdinal(string chinese)
         {
             string number = chinese.Substring(1);
