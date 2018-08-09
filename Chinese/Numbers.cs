@@ -151,9 +151,11 @@ namespace Utilities.Chinese
 
         private static string TwoDigits(int i)
         {
+            if (i == 0)
+                return "";
             if (i < 11 || i > 99)
                 throw new Exception("i must be between 11 and 99");
-
+            
             int tensDigit = i / 10;
             int onesDigit = i % 10;
 
@@ -169,14 +171,11 @@ namespace Utilities.Chinese
 
         private static string ThreeDigits(int i)
         {
-            if (i < 100 || i > 9999)
-                throw new Exception("i must be between 100 and 9999.");
+            if (i < 100 || i > 999)
+                throw new Exception("i must be between 100 and 999.");
 
             int hundredsDigit = i / 100;
             i = i % 100;
-
-            if (hundredsDigit == 1)
-                return SingleDigit(100) + TwoDigits(i);
 
             return SingleDigit(hundredsDigit) + SingleDigit(100) + TwoDigits(i);
         }

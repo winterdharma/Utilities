@@ -36,7 +36,7 @@ namespace Utilities.Strings
             else
             {
                 int innerChars = maxLength - 2;
-                searchPattern = start + @"\w{0," + innerChars + @"}" + ending;
+                searchPattern = start + @".{0," + innerChars + @"}" + ending;
             }
 
             s = Regex.Replace(s, searchPattern, String.Empty);
