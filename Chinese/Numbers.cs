@@ -138,6 +138,21 @@ namespace Utilities.Chinese
             return _chineseNumbers.ContainsValue(chinese);
         }
 
+        public static bool IsChineseNumber(string chinese)
+        {
+            if (chinese.Length == 0)
+                return false;
+            if (chinese.Length == 1)
+                return IsChineseNumber(chinese[0]);
+
+            foreach(char character in chinese)
+            {
+                if (!IsChineseNumber(character))
+                    return false;
+            }
+            return true;
+        }
+
         #region Helper Methods
         private static string SingleDigit(int i)
         {
