@@ -6,8 +6,6 @@ using System.Threading.Tasks;
 
 namespace Utilities.Chinese
 {
-    
-
     public static class Numbers
     {
         private static Dictionary<int, char> _chineseNumbers = new Dictionary<int, char>
