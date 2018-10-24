@@ -44,9 +44,26 @@ namespace Utilities.Strings
             return s;
         }
 
+        /// <summary>
+        /// Removes specified number of characters from end of string.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="length"></param>
+        /// <returns></returns>
         public static string Truncate(this string s, int length)
         {
             return s.Substring(0, s.Length - length);
+        }
+
+        /// <summary>
+        /// Removes specified number of characters from beginning of string.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="length"></param>
+        /// <returns></returns>
+        public static string TruncateStart(this string s, int length)
+        {
+            return s.Substring(length);
         }
     }
 }

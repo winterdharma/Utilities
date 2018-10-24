@@ -143,6 +143,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CBETA\EnglishDraft.cs" />
+    <Compile Include="CBETA\HeadwordConcordance.cs" />
+    <Compile Include="CBETA\IFileOutput.cs" />
     <Compile Include="Chinese\Numbers.cs" />
     <Compile Include="Chinese\Radical.cs" />
     <Compile Include="Events\EventData.cs" />
