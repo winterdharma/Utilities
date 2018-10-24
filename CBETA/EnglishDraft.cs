@@ -18,6 +18,8 @@ namespace Utilities.CBETA
         private HashSet<string> _punctuation = new HashSet<string> { ",", ".", ";", ":", "\"", "'", "?", "!"};
         private HashSet<string> _sentenceFinalPunct = new HashSet<string> { ".", "!", "?" };
         private string _newParagraph = "{p}";
+        private string _newline = "\n";
+        private string _silentReading = "∅";
 
         public EnglishDraft(Database db, string selectReadings, string sourcePath)
         {
@@ -49,47 +51,38 @@ namespace Utilities.CBETA
 
             for (int i = 0; i < _sourcetext.Count; i++)
             {
-                if (source[i].Count == 1)
+                // skip this iteration if it's an empty line
+                if (SourcetextLineIsHeaderOnly(source[i]))
                     continue;
 
+                // setup variables for this line and the next line
                 List<string> lineItems = source[i];
                 List<string> nextItems = new List<string>();
-                if (i < _sourcetext.Count - 1)
+                if (IsNotLastItem(i, _sourcetext))
                     nextItems = source[i + 1];
 
-                List<string> engItems = new List<string>();
-                foreach(string item in lineItems)
+                // build a list of english equivalents
+                List<string> englishItems = TranslateCbetaItemsIntoEnglishItems(lineItems, nextItems);
+
+                // build a string for the translation of each line
+                string item, nextItem, previousItem;
+                for(int j = 0; j < englishItems.Count; j++)
                 {
-                    if(item.Contains("_p"))
+                    item = nextItem = previousItem = "";
+                    item = englishItems[j];
+
+                    // don't do any more work if item is empty
+                    if (string.IsNullOrEmpty(item))
                         continue;
 
-                    if(item.Equals(_newParagraph))
+                    // handle newline characters
+                    if (item.Equals(_newline))
                     {
-                        string pageRef = "[" + lineItems[0].Substring(10) + "]";
-                        engItems.Add("\n");
-                        engItems.Add(pageRef);
-                        continue;
-                    }
-                    engItems.Add(Translate(item, nextItems, out nextItems));
-                }
-                engItems.RemoveAll(item => item.Equals("∅"));
-                
-                for(int j = 0; j < engItems.Count; j++)
-                {
-                    var first = "";
-                    if(engItems[j].Length > 0)
-                        first = engItems[j].Substring(0, 1);
-                    var nextFirst = "";
-                    if(j < engItems.Count - 1 && engItems[j + 1].Length > 0)
-                        nextFirst = engItems[j + 1].Substring(0, 1);
-
-                    if (engItems[j].Equals("\n"))
-                    {
-                        if (engItems.Count > 2)
+                        if (englishItems.Count > 2)
                         {
                             draftTranslation.Add(draft);
                             draft = "";
-                            draft += engItems[j];
+                            draft += item;
                         }
                         else
                         {
@@ -98,21 +91,17 @@ namespace Utilities.CBETA
                             break;
                         }
                     }
-                    else if (engItems[j].Length == 0)
-                        continue;
-                    else if (j == engItems.Count - 1)
-                        draft += engItems[j] + " ";
-                    else if ((!_punctuation.Contains(first) && _punctuation.Contains(nextFirst)) ||
-                        (_punctuation.Contains(first) && _punctuation.Contains(nextFirst)))
-                    {
-                        draft += engItems[j];
-                    }
-                    else if ((engItems[j].Equals("\"") || engItems[j].Equals("'")) && _sentenceFinalPunct.Contains(engItems[j - 1]))
-                        draft += engItems[j] + " ";
-                    else if ((engItems[j].Equals("\"") || engItems[j].Equals("'")) && !_punctuation.Contains(nextFirst))
-                        draft += " " + engItems[j];
-                    else
-                        draft += engItems[j] + " ";
+
+                    if (j > 0)
+                        previousItem = englishItems[j - 1];
+                    if (j < englishItems.Count - 1)
+                        nextItem = englishItems[j + 1];
+
+                    // add whitespace for various situations
+                    item = AddWhitespaceToEnglishItemAsNeeded(item, previousItem, nextItem);
+
+                    // append the english item to the draft of this paragraph
+                    draft += item;
                 }
             }
             draftTranslation.Add(draft);
@@ -143,25 +132,25 @@ namespace Utilities.CBETA
         private string Translate(string item, List<string> next, out List<string> nextItems)
         {
             nextItems = next;
-            if (item.Length < 1)
-                return "";
+            if (string.IsNullOrEmpty(item))
+                return item;
 
             int readingNumber;
             string translation = "";
 
-            if (char.IsDigit(item[item.Length - 1]))
+            if (item.Length > 1 && char.IsDigit(item.Last()))
             {
-                string number = item[item.Length - 1].ToString();
+                string number = item.Last().ToString();
                 item = item.Truncate(1);
-                if (item.Length > 1 && char.IsDigit(item[item.Length - 1]))
+                if (item.Length > 1 && char.IsDigit(item.Last()))
                 {
-                    number = number.Insert(0, item[item.Length - 1].ToString());
+                    number = number.Insert(0, item.Last().ToString());
                     item = item.Truncate(1);
                 }
                 readingNumber = int.Parse(number);
                 translation = GetTermReading(item, readingNumber);
             }
-            else if(item[item.Length - 1].Equals('-'))
+            else if(item.Last().Equals('-'))
             {
                 item = item.Truncate(1);
                 nextItems[1] = item + nextItems[1];
@@ -190,5 +179,102 @@ namespace Utilities.CBETA
         {
             return _draftTranslation;
         }
+
+        #region Helper Methods
+
+        #region Predicates
+        private bool SourcetextLineIsHeaderOnly(List<string> splitLine)
+        {
+            return splitLine.Count == 1;
+        }
+
+        private bool IsNotLastItem(int i, List<string> list)
+        {
+            return i < list.Count - 1;
+        }
+
+        private bool IsCbetaLineHeader(string str)
+        {
+            return str.Contains("_p");
+        }
+
+        private bool IsNewParagraphSymbol(string str)
+        {
+            return str.Equals(_newParagraph);
+        }
+
+        private bool IsNotAnEmptyString(string str)
+        {
+            return string.IsNullOrEmpty(str);
+        }
+
+        private bool IsQuotationMark(string str)
+        {
+            return str.Equals("\"") || str.Equals("'"));
+        }
+
+        private bool IsSentenceFinalPunct(string str)
+        {
+            return _sentenceFinalPunct.Contains(str);
+
+        }
+        #endregion
+
+        #region Process Sourcetext Helpers
+        private List<string> TranslateCbetaItemsIntoEnglishItems(List<string> thisLineItems, List<string> nextLineItems)
+        {
+            List<string> engItems = new List<string>();
+            foreach (string item in thisLineItems)
+            {
+                if (IsCbetaLineHeader(item))
+                    continue;
+
+                if (IsNewParagraphSymbol(item))
+                {
+                    engItems = AddParagraphHeaderToEnglishItems(thisLineItems[0], engItems);
+                    continue;
+                }
+
+                engItems.Add(Translate(item, nextLineItems, out nextLineItems));
+            }
+            engItems.RemoveAll(item => item.Equals(_silentReading));
+
+            return engItems;
+        }
+
+        private List<string> AddParagraphHeaderToEnglishItems(string lineHeader, List<string> engItems)
+        {
+            string pageRef = "[" + lineHeader.Substring(10) + "]";
+            engItems.Add("\n");
+            engItems.Add(pageRef);
+            return engItems;
+        }
+
+        private string AddWhitespaceToEnglishItemAsNeeded(string item, string previousItem, string nextItem)
+        {
+            string itemFirstChar = item.Substring(0, 1);
+            
+            string nextItemFirstChar = "";
+            if (IsNotAnEmptyString(nextItem))
+                nextItemFirstChar = nextItem.Substring(0, 1);
+
+            if (string.IsNullOrEmpty(nextItem) || (IsQuotationMark(item) && IsSentenceFinalPunct(previousItem)) )
+                
+                item += " ";
+            else if ((!_punctuation.Contains(itemFirstChar) && _punctuation.Contains(nextItemFirstChar)) ||
+                (_punctuation.Contains(itemFirstChar) && _punctuation.Contains(nextItemFirstChar)))
+            {
+                
+            }
+            else if (IsQuotationMark(item) && !_punctuation.Contains(nextItemFirstChar))
+                item = " " + item;
+            else
+                item += " ";
+
+            return item;
+        }
+        #endregion
+
+        #endregion
     }
 }
