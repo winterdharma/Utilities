@@ -210,7 +210,7 @@ namespace Utilities.CBETA
 
         private bool IsQuotationMark(string str)
         {
-            return str.Equals("\"") || str.Equals("'"));
+            return str.Equals("\"") || str.Equals("'");
         }
 
         private bool IsSentenceFinalPunct(string str)
