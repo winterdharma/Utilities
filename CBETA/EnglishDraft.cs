@@ -35,8 +35,8 @@ namespace Utilities.CBETA
         private void SetIOPaths(string inputPath)
         {
             _inputPath = inputPath;
-            OutputDirectory = inputPath.Truncate(13);
-            OutputFilename = "english_draft.txt";
+            OutputDirectory = inputPath.Truncate(9);
+            OutputFilename = "english_draft_" + inputPath.Substring(61, 5) + ".txt";
         }
 
         public string OutputDirectory { get; set; }
@@ -205,7 +205,7 @@ namespace Utilities.CBETA
 
         private bool IsNotAnEmptyString(string str)
         {
-            return string.IsNullOrEmpty(str);
+            return !string.IsNullOrEmpty(str);
         }
 
         private bool IsQuotationMark(string str)
