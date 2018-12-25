@@ -8,6 +8,60 @@ namespace Utilities.Chinese
 {
     public static class Utf8
     {
+        public static bool Contains(string contained, string container)
+        {
+            List<string> containedChars = new List<string>();
+            List<string> containerChars = new List<string>();
+
+            foreach(string ch in AsCodePoints(contained))
+            {
+                containedChars.Add(ch);
+            }
+            foreach(string ch in AsCodePoints(container))
+            {
+                containerChars.Add(ch);
+            }
+
+            if (containedChars.Count <= 0)
+                throw new ArgumentException("The search string must not be empty.");
+            if(containedChars.Count == 1)
+            {
+                if (containerChars.Contains(containedChars[0]))
+                    return true;
+                else
+                    return false;
+            }
+            if(containedChars.Count > 1)
+            {
+                if (!containerChars.Contains(containedChars[0]))
+                    return false;
+                var tempContainer = new List<string>(containerChars);
+                int searchNdx = 0;
+                while(tempContainer.Count > 0)
+                {
+                    if(tempContainer[0].Equals(containedChars[searchNdx]))
+                    {
+                        if (searchNdx == containedChars.Count - 1)
+                            return true;
+                        else
+                        {
+                            tempContainer.RemoveAt(0);
+                            searchNdx++;
+                        }
+                    }
+                    else
+                    {
+                        tempContainer.RemoveAt(0);
+                    }
+                }
+                return false;
+            }
+            return false;
+            
+            
+        }
+
+
         /// <summary>
         /// This method provides an accurate count of characters in an UTF-8 encoded string
         /// taking into account any triple-byte Unicode characters encountered.
