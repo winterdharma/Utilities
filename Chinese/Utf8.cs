@@ -13,9 +13,9 @@ namespace Utilities.Chinese
             List<string> containedChars = new List<string>();
             List<string> containerChars = new List<string>();
 
-            foreach(string ch in AsCodePoints(contained))
+            foreach(string c in AsCodePoints(contained))
             {
-                containedChars.Add(ch);
+                containedChars.Add(c);
             }
             foreach(string ch in AsCodePoints(container))
             {
@@ -52,13 +52,12 @@ namespace Utilities.Chinese
                     else
                     {
                         tempContainer.RemoveAt(0);
+                        searchNdx = 0;
                     }
                 }
                 return false;
             }
             return false;
-            
-            
         }
 
 
