@@ -65,5 +65,44 @@ namespace Utilities.Strings
         {
             return s.Substring(length);
         }
+
+        /// <summary>
+        /// Perform same function as Replace(), but only replaces the first match found.
+        /// If no match is found, returns the original string.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="oldString"></param>
+        /// <param name="newString"></param>
+        /// <returns></returns>
+        public static string ReplaceFirstInstanceOf(this string s, string oldString, string newString)
+        {
+            if(s.Contains(oldString))
+            {
+                int index = s.IndexOf(oldString);
+                int length = oldString.Length;
+                if(index == 0)
+                    s = newString + s.Substring(length);
+                else if (index + length == s.Length)
+                    s = s.Substring(0, s.Length - length) + newString;
+                else
+                    s = s.Substring(0, index) + newString + s.Substring(index + length);
+            }
+            return s;
+        }
+
+        public static string ReplaceAt(this string s, int index, string oldString, string newString)
+        {
+            if (s.Contains(oldString))
+            {
+                int length = oldString.Length;
+                if (index == 0)
+                    s = newString + s.Substring(length);
+                else if (index + length == s.Length)
+                    s = s.Substring(0, s.Length - length) + newString;
+                else
+                    s = s.Substring(0, index) + newString + s.Substring(index + length);
+            }
+            return s;
+        }
     }
 }
