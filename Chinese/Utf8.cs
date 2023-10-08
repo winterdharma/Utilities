@@ -148,5 +148,15 @@ namespace Utilities.Chinese
             str = Substring(str, index);
             return str;
         }
+
+        public static bool IsCjk(string text)
+        {
+            return text.Any(c => (uint)c >= 0x4E00 && (uint)c <= 0x2FA1F);
+        }
+
+        public static bool IsCjk(char c)
+        {
+            return (uint)c >= 0x4E00 && (uint)c <= 0x2FA1F;
+        }
     }
 }

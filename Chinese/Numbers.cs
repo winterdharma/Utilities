@@ -10,6 +10,7 @@ namespace Utilities.Chinese
     {
         private static Dictionary<int, char> _chineseNumbers = new Dictionary<int, char>
         {
+            {0, '〇'},
             {1, '一'},
             { 2, '二'},
             { 3, '三'},
@@ -229,7 +230,7 @@ namespace Utilities.Chinese
             return value;
         }
 
-        private static int ChineseCharToInt(char chinese)
+        public static int ChineseCharToInt(char chinese)
         {
             if (_chineseNumbers.ContainsValue(chinese))
                 return _chineseNumbers.First(k => k.Value.Equals(chinese)).Key;

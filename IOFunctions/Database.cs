@@ -1,4 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
+using Npgsql;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
@@ -9,7 +10,8 @@ namespace Utilities.IOFunctions
     public enum DBType
     {
         MySQL,
-        SQLServer
+        SQLServer,
+        PostgreSQL
     }
 
     /// <summary>
@@ -57,6 +59,8 @@ namespace Utilities.IOFunctions
                 return new MySqlConnection(connection);
             else if (_dbType == DBType.SQLServer)
                 return new SqlConnection(connection);
+            else if (_dbType == DBType.PostgreSQL)
+                return new NpgsqlConnection(connection);
             throw new Exception("Unimplemented type of DB.");
         }
 
@@ -66,6 +70,8 @@ namespace Utilities.IOFunctions
                 return new MySqlCommand(sqlCommand, dbConnection as MySqlConnection);
             else if (_dbType == DBType.SQLServer)
                 return new SqlCommand(sqlCommand, dbConnection as SqlConnection);
+            else if (_dbType == DBType.PostgreSQL)
+                return new NpgsqlCommand(sqlCommand, dbConnection as NpgsqlConnection);
             throw new Exception("Unimplemented type of DBConnection.");
         }
         #endregion
