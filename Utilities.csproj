@@ -122,8 +122,9 @@
       <HintPath>packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Npgsql, Version=5.0.10.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
-      <HintPath>..\BilaraDataCreator\packages\Npgsql.5.0.10\lib\netstandard2.0\Npgsql.dll</HintPath>
+    <Reference Include="Npgsql, Version=5.0.18.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7">
+      <HintPath>..\BilaraDataCreator\packages\Npgsql.5.0.18\lib\netstandard2.0\Npgsql.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Pomelo.EntityFrameworkCore.MySql, Version=3.1.1.0, Culture=neutral, PublicKeyToken=2cc498582444921b, processorArchitecture=MSIL">
       <HintPath>packages\Pomelo.EntityFrameworkCore.MySql.3.1.1\lib\netstandard2.0\Pomelo.EntityFrameworkCore.MySql.dll</HintPath>
